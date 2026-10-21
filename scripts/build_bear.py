@@ -31,7 +31,7 @@ def ell(name,center,scale,mat=0,fur=False,parent=None):
  if parent is not None:nodes[parent].setdefault('children',[]).append(ni)
  return ni
 nodes.append({'name':'Bear_Y_up','children':[]});root=0
-body=ell('pear_shaped_body',[0,.79,0],[.47,.65,.32],0,True,root)
+body=ell('pear_shaped_body',[0,.79,-.025],[.47,.65,.415],0,True,root)
 head=ell('round_head',[0,1.73,.015],[.59,.54,.43],1,True,root)
 for side in [-1,1]:
  ell('round_ear',[side*.46,.35,-.025],[.15,.16,.105],1,True,head)
