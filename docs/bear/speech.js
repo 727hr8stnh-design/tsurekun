@@ -2,6 +2,10 @@
  const viewer=document.getElementById('viewer'),speak=document.getElementById('speak'),quiet=document.getElementById('quiet'),words=document.getElementById('words'),status=document.getElementById('speech-status');
  const supported='speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
  let active=null,previous=null,timer=null;
+ const style=document.getElementById('voice-style');
+ const styles={soft:{rate:.88,pitch:1.45},bright:{rate:1.02,pitch:1.6},calm:{rate:.9,pitch:1.05}};
+ if(style){try{const saved=localStorage.getItem('bear-voice-style');if(styles[saved])style.value=saved;}catch(e){}
+ style.addEventListener('change',()=>{stop();try{localStorage.setItem('bear-voice-style',style.value);}catch(e){}status.textContent='声の雰囲気を変えたよ。「話して」で聞いてみてね。';});}
  const controls=['groove','breakbeat','toggle'].map(id=>document.getElementById(id));
  function enable(){speak.disabled=!supported; if(!supported)status.textContent='このブラウザでは音声読み上げを利用できません。Safariで開いてください。';}
  viewer.addEventListener('load',enable);
@@ -16,7 +20,8 @@
   const text=words.value.trim();if(!text){status.textContent='話してほしいセリフを入力してください。';words.focus();return;}
   if(active)stop();
   const utterance=new SpeechSynthesisUtterance(text);active=utterance;
-  utterance.lang='ja-JP';utterance.rate=.9;utterance.pitch=1.15;
+  const tone=styles[style?.value]||styles.soft;
+  utterance.lang='ja-JP';utterance.rate=tone.rate;utterance.pitch=tone.pitch;utterance.volume=1;
   const voice=window.speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith('ja'));if(voice)utterance.voice=voice;
   previous={name:viewer.animationName,paused:viewer.paused};
   speak.disabled=true;quiet.disabled=false;controls.forEach(b=>b.disabled=true);status.textContent='声を準備しています…';
