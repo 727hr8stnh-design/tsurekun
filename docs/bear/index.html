@@ -21,10 +21,15 @@ button:disabled{opacity:.45;cursor:wait}button.active{background:var(--accent);b
 </head><body>
 <header><div class="logo">WHITE BEAR<small>3D DANCE VIEWER · V0.2</small></div><span class="chip">3D DANCE</span></header>
 <main><section class="scene" id="scene"><div class="watermark">DANCE TEST / 02</div>
-<model-viewer id="viewer" src="model.glb?v=6" reveal="auto" alt="白いぬいぐるみ風・しろくまの3Dキャラクター。ダンスする様子を回転して見られます。" camera-controls disable-pan touch-action="none" interpolation-decay="150" environment-image="neutral" exposure="1.05" shadow-intensity="0.6" shadow-softness="1" camera-orbit="0deg 80deg auto" animation-name="01_Sway_4s" autoplay interaction-prompt="none"></model-viewer>
+<model-viewer id="viewer" src="model.glb?v=7" reveal="auto" alt="白いぬいぐるみ風・しろくまの3Dキャラクター。ダンスする様子を回転して見られます。" camera-controls disable-pan touch-action="none" interpolation-decay="150" environment-image="neutral" exposure="1.05" shadow-intensity="0.6" shadow-softness="1" camera-orbit="0deg 80deg auto" animation-name="01_Sway_4s" autoplay interaction-prompt="none"></model-viewer>
 <div id="loading">3Dを読み込み中…</div><div class="instructions">1本指：回転　／　2本指：拡大・縮小</div></section>
-<section class="panel"><p class="eyebrow">ANIMATED CHARACTER · DANCE PROTOTYPE</p><h1 class="title">しろくま <mark>踊る</mark>。</h1><p class="subtitle">ダンスを切り替えて、360°どこからでも確認できます。</p>
-<div class="controls"><button class="active" id="groove" disabled type="button">01 · SWAY</button><button id="breakbeat" disabled type="button">02 · HELLO</button></div>
+<section class="panel"><p class="eyebrow">ANIMATED CHARACTER · DANCE PROTOTYPE</p><h1 class="title">しろくま <mark>おしゃべり</mark>。</h1><p class="subtitle">ダンスを切り替えて、360°どこからでも確認できます。</p>
+<section aria-label="おしゃべり" style="margin-bottom:20px">
+<label for="words">しろくまに話してほしいセリフ</label>
+<textarea id="words" maxlength="300" rows="3" style="display:block;width:100%;margin:10px 0;padding:12px;border-radius:12px;font:inherit;font-size:16px;background:#fffaf0;color:#252820">こんにちは！ぼくはしろくまだよ。今日も会えてうれしいな。一緒にのんびりしようね。</textarea>
+<div class="actions"><button id="speak" disabled type="button">🐻 話して</button><button id="quiet" disabled type="button">声を止める</button></div>
+<p id="speech-status" role="status" class="note">ボタンを押すと日本語で話します。セリフは自由に変えられます。</p>
+</section><div class="controls"><button class="active" id="groove" disabled type="button">01 · SWAY</button><button id="breakbeat" disabled type="button">02 · HELLO</button></div>
 <div class="actions"><button class="secondary" id="toggle" disabled type="button">一時停止</button><button class="secondary" id="share" type="button">リンクを共有</button></div>
 <div class="status" id="status" aria-live="polite">読み込み中</div><p class="note">写真4枚を参考に形を起こした、ぬいぐるみ風の3D試作です。毛並みや細部は簡略化しています。</p></section></main><footer>WHITE BEAR · PHOTO STUDY v0.1</footer>
 <script>
@@ -35,7 +40,7 @@ const timeout=setTimeout(()=>{if(!ready){document.getElementById('loading').text
 function setAnim(name){if(!ready)return;v.animationName=name;v.currentTime=0;v.play();toggle.textContent='一時停止';a.classList.toggle('active',name==='01_Sway_4s');b.classList.toggle('active',name==='02_Hello_4s');s.textContent=name.startsWith('01_')?'SWAY を再生中':'HELLO を再生中'}
 a.addEventListener('click',()=>setAnim('01_Sway_4s'));b.addEventListener('click',()=>setAnim('02_Hello_4s'));
 toggle.addEventListener('click',()=>{if(v.paused){v.play();toggle.textContent='一時停止';s.textContent='ダンス再生中';}else{v.pause();toggle.textContent='再生する';s.textContent='一時停止中';}});
-v.addEventListener('load',()=>{clearTimeout(timeout);ready=true;[a,b,toggle].forEach(el=>el.disabled=false);scene.classList.add('loaded');s.textContent='読み込み完了 · '+(v.availableAnimations||[]).length+'種類のダンス';v.play()});v.addEventListener('error',()=>{clearTimeout(timeout);ready=false;[a,b,toggle].forEach(el=>el.disabled=true);s.textContent='読み込みエラー：通信状況を確認してください。';document.getElementById('loading').textContent='3Dを読み込めませんでした';});
+v.addEventListener('load',()=>{clearTimeout(timeout);ready=true;[a,b,toggle].forEach(el=>el.disabled=false);scene.classList.add('loaded');s.textContent='読み込み完了 · '+'2種類の動きとおしゃべり';v.play()});v.addEventListener('error',()=>{clearTimeout(timeout);ready=false;[a,b,toggle].forEach(el=>el.disabled=true);s.textContent='読み込みエラー：通信状況を確認してください。';document.getElementById('loading').textContent='3Dを読み込めませんでした';});
 document.getElementById('share').addEventListener('click',async()=>{const data={title:'しろくま ダンスビューアー',text:'しろくまの3Dダンスを見てみて！',url:location.href};try{if(navigator.share){await navigator.share(data)}else if(navigator.clipboard && location.protocol==='https:'){await navigator.clipboard.writeText(location.href);s.textContent='URLをコピーしました';}else{s.textContent='Safariの共有メニューからLINEに送れます';}}catch(e){if(e.name!=='AbortError')s.textContent='Safariの共有メニューから送ってください';}});
 })();
-</script></body></html>
+</script><script src="speech.js"></script></body></html>

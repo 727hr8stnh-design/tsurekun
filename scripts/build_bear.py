@@ -134,8 +134,11 @@ for clip,amp in [('01_Sway_4s',.065),('02_Hello_4s',.10)]:
    values.append([0,0,math.sin(angle/2),math.cos(angle/2)])
   ai=data(values,'VEC4',4);sam.append({'input':ti,'output':ai,'interpolation':'LINEAR'});channels.append({'sampler':len(sam)-1,'target':{'node':ni,'path':'rotation'}})
  animations.append({'name':clip,'samplers':sam,'channels':channels})
+mouth=ell('talking_mouth',[0,-.245,.538],[.065,.012,.012],5,False,head)
+values=[[1,1+4*max(0,math.sin(t*math.pi*6)),1] for t in times]
+animations.append({'name':'03_Talk_4s','samplers':[{'input':ti,'output':data(values,'VEC3',3),'interpolation':'LINEAR'}],'channels':[{'sampler':0,'target':{'node':mouth,'path':'scale'}}]})
 g={'asset':{'version':'2.0','generator':'Photo-guided stylized bear v1'},'scene':0,'scenes':[{'nodes':[0]}],'nodes':nodes,'meshes':meshes,'materials':materials,'animations':animations,'buffers':[{'byteLength':len(buf)}],'bufferViews':views,'accessors':acc}
 j=json.dumps(g,separators=(',',':')).encode();j+=b' '*(-len(j)%4);buf.extend(b'\0'*(-len(buf)%4));total=12+8+len(j)+8+len(buf)
 Path('docs/bear').mkdir(exist_ok=True)
 Path('docs/bear/model.glb').write_bytes(struct.pack('<4sII',b'glTF',2,total)+struct.pack('<II',len(j),0x4e4f534a)+j+struct.pack('<II',len(buf),0x004e4942)+buf)
-print('GLB',total,'bytes',len(nodes),'nodes; 2 animation clips')
+print('GLB',total,'bytes',len(nodes),'nodes; 3 animation clips')
