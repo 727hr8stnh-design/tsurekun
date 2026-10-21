@@ -25,3 +25,5 @@
 - 提供された正面・側面・背面写真を参考に手続き生成したGLBと独立ビューアーを docs/bear/ に作成。
 - Y-up、ゆれる・手を振るの2クリップ。写真測量ではなく簡略化した形状モデル。リアルな毛並みは未再現。
 - ローカルChromeで実モデル読み込みと正面描画を確認。iPhone実機は未確認。
+- 公開URL: https://727hr8stnh-design.github.io/tsurekun/bear/
+- 577c38d のPagesビルド成功。公開HTML・GLBとローカル成果物の一致、公開ブラウザで2クリップ読み込み・モデル描画を確認。ローカルでHELLO切替確認。証拠 verification/bear-public.png。
