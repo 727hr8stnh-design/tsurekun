@@ -53,3 +53,4 @@
 ## 袖ぐり・襟 / v0.1.5
 - 袖ぐりを楕円の開口と丸い縁取りへ変更。前襟を丸く下げ、生成りの縁取りを追加。
 - ローカルChromeで正面・側面を目視確認。iPhone実機未確認。
+- 公開検証: 6910f5d のPagesビルド成功。公開HTML・GLBはローカル修正版と一致。公開ページの正面襟・側面袖ぐりと停止操作を確認。証拠 verification/bear-neck-v6.png、verification/bear-armhole-v6.png。
