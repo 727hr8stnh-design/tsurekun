@@ -35,12 +35,15 @@ body=ell('pear_shaped_body',[0,.79,-.025],[.535,.65,.485],0,True,root)
 # Open knitted vest shell follows the fuller torso, with side armholes.
 for name,color in [('cocoa_knit',[.27,.145,.075,1]),('oat_knit',[.89,.81,.62,1])]:
  materials.append({'name':name,'doubleSided':True,'pbrMetallicRoughness':{'baseColorFactor':color,'metallicFactor':0,'roughnessFactor':1}})
-vp=[];vn=[];groups=[[],[]];rows=110;cols=128
+vp=[];vn=[];groups=[[],[]];rows=160;cols=192
 for j in range(rows+1):
  y=.31+j/rows*1.035
  radius=math.sqrt(max(.001,1-((y-.79)/.65)**2))
  for i in range(cols+1):
   a=i/cols*2*math.pi
+  # Scoop the front neckline rather than ending at a horizontal cut.
+  y=.31+j/rows*(1.035-.13*max(0,math.sin(a))**2)
+  radius=math.sqrt(max(.001,1-((y-.79)/.65)**2))
   knit=.0028*math.cos(i*math.pi)*math.cos(j*math.pi)+.0015*math.sin(i*2+j*2)
   x=(.552*radius+knit)*math.cos(a);z=(.502*radius+knit)*math.sin(a)
   vp.append([x,y,z-.025]);n=[x/.552**2,(y-.79)/.65**2,z/.502**2];l=math.sqrt(sum(v*v for v in n));vn.append([v/l for v in n])
@@ -51,12 +54,44 @@ for j in range(rows):
  for i in range(cols):
   a=(i+.5)/cols*2*math.pi
   # Open armholes on both sides, below the shoulder straps.
-  if .92<y<1.27 and abs(math.cos(a))>.77:continue
+  yy=.31+(j+.5)/rows*(1.035-.13*max(0,math.sin(a))**2)
+  side_angle=math.atan2(math.sin(a),abs(math.cos(a)))
+  if ((yy-1.075)/.195)**2+(side_angle/.66)**2<1:continue
   n=j*(cols+1)+i;m=n+cols+1
   groups[mat].extend([n,m,n+1,n+1,m,m+1])
 pa=data(vp,'VEC3',3);no=data(vn,'VEC3',3);pr=[]
 for k,indices in enumerate(groups):pr.append({'attributes':{'POSITION':pa,'NORMAL':no},'indices':data(indices,'SCALAR',1,5125),'material':7+k})
 meshes.append({'name':'brown_and_cream_knitted_vest','primitives':pr});nodes.append({'name':'striped_sleeveless_vest','mesh':len(meshes)-1});nodes[root]['children'].append(len(nodes)-1)
+# Rounded knitted binding follows the actual curved openings.
+def shell_point(a,y):
+ r=math.sqrt(max(.001,1-((y-.79)/.65)**2))
+ return [.556*r*math.cos(a),y,.506*r*math.sin(a)-.025]
+def binding(name,path,radius,material):
+ pos=[];norm=[];indices=[];N=len(path)
+ for i,c in enumerate(path):
+  prev=path[(i-1)%N];nxt=path[(i+1)%N];t=[nxt[k]-prev[k] for k in range(3)];l=math.sqrt(sum(x*x for x in t));t=[x/l for x in t]
+  ref=[0,1,0] if abs(t[1])<.9 else [0,0,1]
+  u=[t[1]*ref[2]-t[2]*ref[1],t[2]*ref[0]-t[0]*ref[2],t[0]*ref[1]-t[1]*ref[0]];l=math.sqrt(sum(x*x for x in u));u=[x/l for x in u]
+  v=[t[1]*u[2]-t[2]*u[1],t[2]*u[0]-t[0]*u[2],t[0]*u[1]-t[1]*u[0]]
+  for j in range(10):
+   a=j/10*2*math.pi;n=[math.cos(a)*u[k]+math.sin(a)*v[k] for k in range(3)]
+   pos.append([c[k]+radius*n[k] for k in range(3)]);norm.append(n)
+ for i in range(N):
+  for j in range(10):
+   a=i*10+j;b=((i+1)%N)*10+j;c=i*10+(j+1)%10;d=((i+1)%N)*10+(j+1)%10
+   indices.extend([a,b,c,c,b,d])
+ meshes.append({'name':name,'primitives':[{'attributes':{'POSITION':data(pos,'VEC3',3),'NORMAL':data(norm,'VEC3',3)},'indices':data(indices,'SCALAR',1,5125),'material':material}]})
+ nodes.append({'name':name,'mesh':len(meshes)-1});nodes[root]['children'].append(len(nodes)-1)
+for side in [0,math.pi]:
+ path=[]
+ for i in range(160):
+  t=i/160*2*math.pi;a=side+.66*math.cos(t);y=1.075+.195*math.sin(t)
+  path.append(shell_point(a,y))
+ binding('rounded_armhole_binding',path,.018,7)
+path=[]
+for i in range(192):
+ a=i/192*2*math.pi;path.append(shell_point(a,1.345-.13*max(0,math.sin(a))**2))
+binding('round_scooped_neckline',path,.022,8)
 head=ell('round_head',[0,1.73,.015],[.59,.54,.43],1,True,root)
 for side in [-1,1]:
  ell('round_ear',[side*.46,.35,-.025],[.15,.16,.105],1,True,head)
