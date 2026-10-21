@@ -31,7 +31,32 @@ def ell(name,center,scale,mat=0,fur=False,parent=None):
  if parent is not None:nodes[parent].setdefault('children',[]).append(ni)
  return ni
 nodes.append({'name':'Bear_Y_up','children':[]});root=0
-body=ell('pear_shaped_body',[0,.79,-.025],[.47,.65,.415],0,True,root)
+body=ell('pear_shaped_body',[0,.79,-.025],[.535,.65,.485],0,True,root)
+# Open knitted vest shell follows the fuller torso, with side armholes.
+for name,color in [('cocoa_knit',[.27,.145,.075,1]),('oat_knit',[.89,.81,.62,1])]:
+ materials.append({'name':name,'doubleSided':True,'pbrMetallicRoughness':{'baseColorFactor':color,'metallicFactor':0,'roughnessFactor':1}})
+vp=[];vn=[];groups=[[],[]];rows=110;cols=128
+for j in range(rows+1):
+ y=.31+j/rows*1.035
+ radius=math.sqrt(max(.001,1-((y-.79)/.65)**2))
+ for i in range(cols+1):
+  a=i/cols*2*math.pi
+  knit=.0028*math.cos(i*math.pi)*math.cos(j*math.pi)+.0015*math.sin(i*2+j*2)
+  x=(.552*radius+knit)*math.cos(a);z=(.502*radius+knit)*math.sin(a)
+  vp.append([x,y,z-.025]);n=[x/.552**2,(y-.79)/.65**2,z/.502**2];l=math.sqrt(sum(v*v for v in n));vn.append([v/l for v in n])
+for j in range(rows):
+ y=.31+(j+.5)/rows*1.035
+ # Cocoa base with broad cream horizontal stripes and cream lower edging.
+ mat=1 if y<.35 or .49<y<.57 or .76<y<.84 or 1.02<y<1.10 else 0
+ for i in range(cols):
+  a=(i+.5)/cols*2*math.pi
+  # Open armholes on both sides, below the shoulder straps.
+  if .92<y<1.27 and abs(math.cos(a))>.77:continue
+  n=j*(cols+1)+i;m=n+cols+1
+  groups[mat].extend([n,m,n+1,n+1,m,m+1])
+pa=data(vp,'VEC3',3);no=data(vn,'VEC3',3);pr=[]
+for k,indices in enumerate(groups):pr.append({'attributes':{'POSITION':pa,'NORMAL':no},'indices':data(indices,'SCALAR',1,5125),'material':7+k})
+meshes.append({'name':'brown_and_cream_knitted_vest','primitives':pr});nodes.append({'name':'striped_sleeveless_vest','mesh':len(meshes)-1});nodes[root]['children'].append(len(nodes)-1)
 head=ell('round_head',[0,1.73,.015],[.59,.54,.43],1,True,root)
 for side in [-1,1]:
  ell('round_ear',[side*.46,.35,-.025],[.15,.16,.105],1,True,head)
@@ -41,7 +66,7 @@ for side in [-1,1]:
  ell('muzzle_cheek',[side*.108,-.13,.388],[.19,.155,.16],1,True,head)
  # The shoulder is the pivot; arm geometry extends down from it.
  shoulder=len(nodes)
- nodes.append({'name':'arm_left' if side<0 else 'arm_right','translation':[side*.395,1.245,-.045],'children':[]})
+ nodes.append({'name':'arm_left' if side<0 else 'arm_right','translation':[side*.47,1.105,-.045],'children':[]})
  nodes[root]['children'].append(shoulder)
  ell('continuous_soft_arm',[side*.025,-.245,0],[.18,.35,.19],1,True,shoulder)
  # Short legs tuck into the lower body; feet overlap the leg volume.
@@ -56,7 +81,7 @@ for side in [-1,1]:
 ell('nose',[0,-.047,.539],[.085,.053,.045],4,False,head)
 ell('nose_highlight',[-.021,-.029,.576],[.024,.008,.006],6,False,head)
 ell('philtrum',[0,-.16,.536],[.009,.057,.008],5,False,head)
-ell('little_tail',[0,.41,-.32],[.135,.14,.13],1,True,root)
+ell('little_tail',[0,.41,-.43],[.135,.14,.13],1,True,root)
 # Fine short tufts around silhouette; restrained geometry keeps mobile rendering light.
 for k in range(0):
  t=random.uniform(0,2*math.pi);p=random.uniform(.1,math.pi-.1);x=math.sin(p)*math.cos(t);y=math.cos(p);z=math.sin(p)*math.sin(t)
