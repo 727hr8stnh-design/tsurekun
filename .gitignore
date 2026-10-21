@@ -3,3 +3,6 @@ imported_publish_v02/
 IMPORT_MANIFEST.json
 .DS_Store
 verification/
+
+.runtime/
+__pycache__/

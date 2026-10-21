@@ -9,7 +9,7 @@
  function finish(message){
   clearTimeout(timer);active=null;quiet.disabled=true;speak.disabled=false;
   if(previous){viewer.animationName=previous.name;viewer.currentTime=0;if(previous.paused)viewer.pause();else viewer.play();previous=null;}
-  controls.forEach(b=>b.disabled=false);status.textContent=message;
+  controls.forEach(b=>b.disabled=false);status.textContent=message;document.dispatchEvent(new Event('bear-speech-finished'));
  }
  function stop(){if(!active)return;active=null;window.speechSynthesis.cancel();finish('声を止めました');}
  speak.addEventListener('click',()=>{
@@ -27,6 +27,7 @@
   try{window.speechSynthesis.speak(utterance);}catch(e){finish('声を再生できませんでした。もう一度お試しください。');}
  });
  quiet.addEventListener('click',stop);
+ document.addEventListener('bear-say',event=>{if(!speak.disabled){words.value=event.detail; speak.click();}});
  window.addEventListener('pagehide',()=>{if(supported)stop();});
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&supported)stop();});
 })();

@@ -60,3 +60,15 @@
 - node --check成功。ローカルChromeでボタン操作後の発話終了イベントとUI復帰を確認。
 - 実音声の聴取・iPhone Safari実機・発話中口パクの視認は未確認。自由AI会話は未実装。
 - 公開検証: fcd3639 のPagesビルド成功。HTML・speech.js配信一致。公開モデル読み込みと「話して」操作後の終了イベント・UI復帰を確認。実音声の聴取は未確認。証拠 verification/bear-talk-v7.png。
+
+## OpenCode双方向会話 / v0.2.0 / 2026-10-22
+- HALO halo_opencode.py の現物を参照し、独立XDG・認証なし・無料モデル事前検査・DBによる実モデル/cost 0/完了検証を会話用に実装。HALO本体は読取のみ。
+- 旧Museモデルは現行カタログにないため使用せず、現行の opencode/mimo-v2.6-flash-free に固定。有料フォールバックなし。
+- 実モデルから日本語の返答を取得。CLIとHTTP API、HTTPSブラウザの実返答を別々に確認。記録上cost 0、モデル一致、finish stop。
+- 6テスト成功: 料金・モデル証明・入力・HTTP認証/Origin/JSON境界・OS sandboxによる実ファイル読書き拒否。JavaScript構文確認成功。
+- Tailscaleは初回Stopped、ユーザーが起動後にRunningを確認。既存Serve設定を維持し、HTTPS:8447 → localhost:8870 を追加。会話キー付き専用リンクは .runtime/chat/private-link.txt のみ保存。
+- 作業中の一時Cloudflareトンネルは停止済み。OpenCode自体は外部へ公開していない。
+- Tailscale経由のブラウザで「タロウ」と伝えたあと名前を聞き、会話履歴に基づく返答を確認。390px幅の会話UIも目視確認。
+- 証拠: verification/opencode-live-summary.json、verification/opencode-conversation-mobile.png（ローカルのみ）。
+- iPhone実機のマイク認識・実際の音声聴取・発話中口パクは未確認。ブラウザ側の読み上げ終了イベントとUI復帰は確認。
+- GitHub Pagesの既存読み上げページと異なり、双方向会話にはMac・会話サーバー・Tailscaleの起動が必要。Macスリープ・再起動時の自動復帰は未実装。
