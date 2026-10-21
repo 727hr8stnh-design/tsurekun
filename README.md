@@ -7,3 +7,7 @@
 指1本で回転、2本指で拡大縮小。ダンスボタンで切替、一時停止で停止。
 
 model-viewer 4.1.0 (Apache-2.0) を vendor/ に同梱。モデルは既存つれくん素材から取得。
+
+公開URL: https://727hr8stnh-design.github.io/tsurekun/
+
+Safari対応範囲: https://modelviewer.dev/ （iOS/macOS Safariの直近2メジャー版）。iPhone実機での検証は未実施。
