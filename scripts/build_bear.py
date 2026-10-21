@@ -39,11 +39,16 @@ for side in [-1,1]:
  ell('black_eye',[side*.225,.038,.391],[.061,.079,.039],3,False,head)
  ell('eye_glint',[side*.225-.014,.065,.425],[.014,.018,.008],6,False,head)
  ell('muzzle_cheek',[side*.108,-.13,.388],[.19,.155,.16],1,True,head)
- ell('foot',[side*.245,.17,.14],[.225,.18,.31],1,True,root)
- arm=ell('arm_left' if side<0 else 'arm_right',[side*.34,1.20,.19],[.185,.34,.185],1,True,root)
- nodes[arm]['rotation']=[0,0,side*math.sin(.22),math.cos(.22)]
+ # The shoulder is the pivot; arm geometry extends down from it.
+ shoulder=len(nodes)
+ nodes.append({'name':'arm_left' if side<0 else 'arm_right','translation':[side*.305,1.245,.045],'children':[]})
+ nodes[root]['children'].append(shoulder)
+ ell('continuous_soft_arm',[side*.035,-.245,.12],[.18,.35,.20],1,True,shoulder)
+ # Short legs tuck into the lower body; feet overlap the leg volume.
+ leg=ell('short_leg',[side*.225,.31,.015],[.22,.30,.235],0,True,root)
+ foot=ell('foot',[0,-.18,.13],[.22,.145,.275],1,True,leg)
  for toe in [-1,1]:
-  ell('toe_seam',[side*.245+toe*.057,.17,.435],[.007,.061,.009],2,False,root)
+  ell('toe_seam',[toe*.057,.012,.264],[.006,.047,.008],2,False,foot)
  # curved stitched smile segments
  for k in range(9):
   t=k/8;x=side*(.012+t*.11);y=-.225-.027*math.sin(t*math.pi)
@@ -63,9 +68,9 @@ for clip,amp in [('01_Sway_4s',.065),('02_Hello_4s',.10)]:
  for ni in [root]+[i for i,n in enumerate(nodes) if n['name'] in ['arm_left','arm_right']]:
   values=[]
   for t in times:
-   base=0 if ni==root else (-.44 if nodes[ni]['name']=='arm_left' else .44)
-   angle=base+amp*math.sin(t*math.pi)*(1 if ni==root else 2)
-   if clip.startswith('02') and nodes[ni]['name']=='arm_left':angle=-.85+.25*math.sin(2*math.pi*t)
+   base=0 if ni==root else (-.10 if nodes[ni]['name']=='arm_left' else .10)
+   angle=base+(.025 if ni==root else .055)*math.sin(t*math.pi)
+   if clip.startswith('02') and nodes[ni]['name']=='arm_left':angle=-.26+.12*math.sin(2*math.pi*t)
    values.append([0,0,math.sin(angle/2),math.cos(angle/2)])
   ai=data(values,'VEC4',4);sam.append({'input':ti,'output':ai,'interpolation':'LINEAR'});channels.append({'sampler':len(sam)-1,'target':{'node':ni,'path':'rotation'}})
  animations.append({'name':clip,'samplers':sam,'channels':channels})

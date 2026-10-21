@@ -27,3 +27,8 @@
 - ローカルChromeで実モデル読み込みと正面描画を確認。iPhone実機は未確認。
 - 公開URL: https://727hr8stnh-design.github.io/tsurekun/bear/
 - 577c38d のPagesビルド成功。公開HTML・GLBとローカル成果物の一致、公開ブラウザで2クリップ読み込み・モデル描画を確認。ローカルでHELLO切替確認。証拠 verification/bear-public.png。
+
+## クマ手足修正 / v0.1.1
+- 以前は腕の中心が回転支点で、足も胴体から独立した形だった。
+- 肩支点＋下へ伸びる腕、短い脚と足の階層、揺れ幅縮小へ変更。
+- ローカルで正面・側面とHELLO切替を確認。iPhone実機未確認。
