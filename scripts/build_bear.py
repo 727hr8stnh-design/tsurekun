@@ -41,9 +41,9 @@ for side in [-1,1]:
  ell('muzzle_cheek',[side*.108,-.13,.388],[.19,.155,.16],1,True,head)
  # The shoulder is the pivot; arm geometry extends down from it.
  shoulder=len(nodes)
- nodes.append({'name':'arm_left' if side<0 else 'arm_right','translation':[side*.305,1.245,.045],'children':[]})
+ nodes.append({'name':'arm_left' if side<0 else 'arm_right','translation':[side*.395,1.245,-.045],'children':[]})
  nodes[root]['children'].append(shoulder)
- ell('continuous_soft_arm',[side*.035,-.245,.12],[.18,.35,.20],1,True,shoulder)
+ ell('continuous_soft_arm',[side*.025,-.245,0],[.18,.35,.19],1,True,shoulder)
  # Short legs tuck into the lower body; feet overlap the leg volume.
  leg=ell('short_leg',[side*.225,.31,.015],[.22,.30,.235],0,True,root)
  foot=ell('foot',[0,-.18,.13],[.22,.145,.275],1,True,leg)
