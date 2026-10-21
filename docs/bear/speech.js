@@ -3,7 +3,7 @@
  const supported='speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
  let active=null,previous=null,timer=null;
  const style=document.getElementById('voice-style');
- const styles={soft:{rate:.88,pitch:1.45},bright:{rate:1.02,pitch:1.6},calm:{rate:.9,pitch:1.05}};
+ const styles={soft:{rate:.72,pitch:1.45},bright:{rate:.85,pitch:1.6},calm:{rate:.75,pitch:1.05}};
  if(style){try{const saved=localStorage.getItem('bear-voice-style');if(styles[saved])style.value=saved;}catch(e){}
  style.addEventListener('change',()=>{stop();try{localStorage.setItem('bear-voice-style',style.value);}catch(e){}status.textContent='声の雰囲気を変えたよ。「話して」で聞いてみてね。';});}
  const controls=['groove','breakbeat','toggle'].map(id=>document.getElementById(id));

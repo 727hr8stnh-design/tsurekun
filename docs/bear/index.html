@@ -46,4 +46,4 @@ toggle.addEventListener('click',()=>{if(v.paused){v.play();toggle.textContent='�
 v.addEventListener('load',()=>{clearTimeout(timeout);ready=true;[a,b,toggle].forEach(el=>el.disabled=false);scene.classList.add('loaded');s.textContent='読み込み完了 · '+'2種類の動きとおしゃべり';v.play()});v.addEventListener('error',()=>{clearTimeout(timeout);ready=false;[a,b,toggle].forEach(el=>el.disabled=true);s.textContent='読み込みエラー：通信状況を確認してください。';document.getElementById('loading').textContent='3Dを読み込めませんでした';});
 document.getElementById('share').addEventListener('click',async()=>{const data={title:'しろくま ダンスビューアー',text:'しろくまの3Dダンスを見てみて！',url:location.href};try{if(navigator.share){await navigator.share(data)}else if(navigator.clipboard && location.protocol==='https:'){await navigator.clipboard.writeText(location.href);s.textContent='URLをコピーしました';}else{s.textContent='Safariの共有メニューからLINEに送れます';}}catch(e){if(e.name!=='AbortError')s.textContent='Safariの共有メニューから送ってください';}});
 })();
-</script><script src="speech.js?v=3"></script></body></html>
+</script><script src="speech.js?v=4"></script></body></html>
