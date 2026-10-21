@@ -72,3 +72,20 @@
 - 証拠: verification/opencode-live-summary.json、verification/opencode-conversation-mobile.png（ローカルのみ）。
 - iPhone実機のマイク認識・実際の音声聴取・発話中口パクは未確認。ブラウザ側の読み上げ終了イベントとUI復帰は確認。
 - GitHub Pagesの既存読み上げページと異なり、双方向会話にはMac・会話サーバー・Tailscaleの起動が必要。Macスリープ・再起動時の自動復帰は未実装。
+
+## iPhone接続の申告 / 2026-10-22
+- ユーザーがSafariの「サーバが見つかりません」を報告。MacからのHTTPSページ200・API health正常・Tailscale Runningを再確認。
+- iOS peerはOnline=trueだがActive=false、Tailscale pingはタイムアウト。Macでの確認はiPhoneからの到達確認の代わりにならない。
+- 一時Cloudflare代替接続も試行したが接続前検査に失敗。未接続トンネルを停止し、代替リンクはユーザーへ渡していない。
+- iPhone側のTailscale VPN接続状態を確認中。接続問題は未解決。
+- ユーザーのiPhone画像でConnectedを確認後、Mac→iPhoneのTailscale pingがDERP(tok)経由51msで応答。直結は未成立だが中継経路は到達。HTTPSページ200を再確認。iPhone Safariの名前解決・ページ表示は引き続き未確認。
+
+## iPhoneで使用後に固まる申告 / v0.2.1
+- ユーザーがiPhoneでページを開けたことを確認。その後の固まりを申告。停止時の正確な状態は未特定。
+- サーバーhealthは正常、調査時点でOpenCode推論プロセスなし。
+- マイクのonend未通知でlisteningが解除されない経路を修正。毎回認識インスタンス作成、20秒解除、古いコールバック拒否、画面離脱時の停止を追加。
+- 常時押せる復帰ボタン、待機取消、遅延返答の無視、入力文復元を追加。推論45秒・待機60秒・音声45秒の上限。
+- 会話サーバーのみ再読込。HALOやTailscaleの既存サービスは停止していない。
+- Nodeによる障害注入テストで終了通知欠落・遅延通知・リクエスト取消・画面離脱復帰を確認。Pythonの6安全テストも成功。
+- Tailscale実画面で返答待ち中に復帰ボタンを押し、マイクと送信ボタンが再び使えることを確認。証拠 verification/chat-recovery-v2.png。
+- iPhone実機での再発解消は未確認。端末側の全画面停止・メモリ不足などは未特定。

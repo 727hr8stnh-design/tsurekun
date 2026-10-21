@@ -31,6 +31,7 @@ button:disabled{opacity:.45;cursor:wait}button.active{background:var(--accent);b
 <label for="chat-message">話しかける内容</label>
 <textarea id="chat-message" maxlength="500" rows="2" placeholder="こんにちは、今日は何してた？" style="display:block;width:100%;font:inherit;font-size:16px;border-radius:12px;padding:12px;margin:10px 0"></textarea>
 <div class="actions"><button id="chat-mic" disabled type="button">🎤 話しかける</button><button id="chat-send" disabled type="button">送る</button></div>
+<button id="chat-recover" class="secondary" type="button" style="width:100%;margin-top:8px">音声・待機を止めて復帰</button>
 <button id="chat-clear" class="secondary" type="button" style="width:100%;margin-top:8px">会話をリセット</button>
 <p class="note">マイクで話すか、文字を入力して送ってね。返事は声でも読み上げます。マイクの音声処理はブラウザの機能、返答はOpenCodeの無料モデルを使います。</p>
 </section><section aria-label="おしゃべり" style="margin-bottom:20px">
@@ -52,4 +53,4 @@ toggle.addEventListener('click',()=>{if(v.paused){v.play();toggle.textContent='�
 v.addEventListener('load',()=>{clearTimeout(timeout);ready=true;[a,b,toggle].forEach(el=>el.disabled=false);scene.classList.add('loaded');s.textContent='読み込み完了 · '+'2種類の動きとおしゃべり';v.play()});v.addEventListener('error',()=>{clearTimeout(timeout);ready=false;[a,b,toggle].forEach(el=>el.disabled=true);s.textContent='読み込みエラー：通信状況を確認してください。';document.getElementById('loading').textContent='3Dを読み込めませんでした';});
 document.getElementById('share').addEventListener('click',async()=>{const data={title:'しろくま ダンスビューアー',text:'しろくまの3Dダンスを見てみて！',url:location.href};try{if(navigator.share){await navigator.share(data)}else if(navigator.clipboard && location.protocol==='https:'){await navigator.clipboard.writeText(location.href);s.textContent='URLをコピーしました';}else{s.textContent='Safariの共有メニューからLINEに送れます';}}catch(e){if(e.name!=='AbortError')s.textContent='Safariの共有メニューから送ってください';}});
 })();
-</script><script src="speech.js"></script><script src="conversation.js"></script></body></html>
+</script><script src="speech.js?v=2"></script><script src="conversation.js?v=2"></script></body></html>
