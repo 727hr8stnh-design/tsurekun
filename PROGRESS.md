@@ -105,3 +105,4 @@
 - 4モデルのGLB長・シーン構成・3アニメーション保持を検査。
 - Tailscaleブラウザで4種類の選択と描画、着替え後のHELLO切替、ベストへ戻せることを確認。証拠 verification/wardrobe-sweater.png。
 - 会話・読み上げの既存テスト成功。iPhone実機での着せ替えと会話同時操作は未確認。
+- 公開検証: bab0173 のPagesビルド成功。公開HTML・wardrobe.js・セーターGLBがローカル成果物と一致。Tailscale配信のJS一致も確認。
