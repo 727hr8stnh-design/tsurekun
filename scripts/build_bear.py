@@ -1,5 +1,7 @@
 """Photo-guided, stylized white bear. Pure Python GLB generator, Y-up."""
-import math, json, struct, random
+import math, json, struct, random, sys
+outfit=sys.argv[1] if len(sys.argv)>1 else "vest"
+if outfit not in ("vest","sweater","shirt","bare"):raise SystemExit("Unknown outfit")
 from pathlib import Path
 random.seed(18)
 buf=bytearray();views=[];acc=[];meshes=[];nodes=[]
@@ -56,7 +58,7 @@ for j in range(rows):
   # Open armholes on both sides, below the shoulder straps.
   yy=.31+(j+.5)/rows*(1.035-.13*max(0,math.sin(a))**2)
   side_angle=math.atan2(math.sin(a),abs(math.cos(a)))
-  if ((yy-1.075)/.195)**2+(side_angle/.66)**2<1:continue
+  if outfit in ('vest','bare') and ((yy-1.075)/.195)**2+(side_angle/.66)**2<1:continue
   n=j*(cols+1)+i;m=n+cols+1
   groups[mat].extend([n,m,n+1,n+1,m,m+1])
 pa=data(vp,'VEC3',3);no=data(vn,'VEC3',3);pr=[]
@@ -137,8 +139,21 @@ for clip,amp in [('01_Sway_4s',.065),('02_Hello_4s',.10)]:
 mouth=ell('talking_mouth',[0,-.245,.538],[.065,.012,.012],5,False,head)
 values=[[1,1+4*max(0,math.sin(t*math.pi*6)),1] for t in times]
 animations.append({'name':'03_Talk_4s','samplers':[{'input':ti,'output':data(values,'VEC3',3),'interpolation':'LINEAR'}],'channels':[{'sampler':0,'target':{'node':mouth,'path':'scale'}}]})
+# Wardrobe changes garment geometry, leaving the same animated bear intact.
+if outfit=='bare':
+ hidden={'striped_sleeveless_vest','rounded_armhole_binding','round_scooped_neckline'}
+ nodes[root]['children']=[n for n in nodes[root]['children'] if nodes[n]['name'] not in hidden]
+elif outfit in ('sweater','shirt'):
+ materials[7]['pbrMetallicRoughness']['baseColorFactor']=([.52,.19,.26,1] if outfit=='sweater' else [.10,.28,.46,1])
+ nodes[root]['children']=[n for n in nodes[root]['children'] if nodes[n]['name']!='rounded_armhole_binding']
+ for ni,node in list(enumerate(nodes)):
+  if node['name'] not in ('arm_left','arm_right'):continue
+  side=-1 if node['name']=='arm_left' else 1
+  long=outfit=='sweater'
+  ell('long_sleeve' if long else 'short_sleeve',[side*.025,-.19 if long else -.07,0],[.205,.31 if long else .15,.215],7,False,ni)
+  ell('knit_cuff' if long else 'shirt_cuff',[side*.025,-.445 if long else -.175,0],[.20,.035,.21],8,False,ni)
 g={'asset':{'version':'2.0','generator':'Photo-guided stylized bear v1'},'scene':0,'scenes':[{'nodes':[0]}],'nodes':nodes,'meshes':meshes,'materials':materials,'animations':animations,'buffers':[{'byteLength':len(buf)}],'bufferViews':views,'accessors':acc}
 j=json.dumps(g,separators=(',',':')).encode();j+=b' '*(-len(j)%4);buf.extend(b'\0'*(-len(buf)%4));total=12+8+len(j)+8+len(buf)
 Path('docs/bear').mkdir(exist_ok=True)
-Path('docs/bear/model.glb').write_bytes(struct.pack('<4sII',b'glTF',2,total)+struct.pack('<II',len(j),0x4e4f534a)+j+struct.pack('<II',len(buf),0x004e4942)+buf)
+Path('docs/bear/'+('model' if outfit=='vest' else outfit)+'.glb').write_bytes(struct.pack('<4sII',b'glTF',2,total)+struct.pack('<II',len(j),0x4e4f534a)+j+struct.pack('<II',len(buf),0x004e4942)+buf)
 print('GLB',total,'bytes',len(nodes),'nodes; 3 animation clips')

@@ -32,3 +32,8 @@ Macが停止・スリープ中は利用不可。会話の文字はOpenCodeのモ
 
 検証: `python3 -m unittest discover -s chat -p 'test_*.py' -v`
 GitHub Pagesは静的ホスティングのため、OpenCodeの会話サーバーは動かせない。
+
+## 着せ替えモデルの再生成
+`python3 scripts/build_bear.py` は既存ベスト版。
+`python3 scripts/build_bear.py sweater` / `shirt` / `bare` で各着せ替え版を生成する。
+ページの「きょうの服」で切り替える。着替え時は会話の音声と待機をいったん停止する。
